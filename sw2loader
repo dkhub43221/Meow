@@ -1,0 +1,386 @@
+-- DK's HUB Loader - NO CORNERS VERSION
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+
+pcall(function()
+	if CoreGui:FindFirstChild("VersionLoader") then CoreGui.VersionLoader:Destroy() end
+	if Lighting:FindFirstChild("LoaderBlur") then Lighting.LoaderBlur:Destroy() end
+end)
+
+local Loader = Instance.new("ScreenGui")
+Loader.Name = "VersionLoader"
+Loader.IgnoreGuiInset = true
+Loader.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Loader.ResetOnSpawn = false
+Loader.DisplayOrder = 999999
+Loader.Parent = CoreGui
+
+local Background = Instance.new("Frame")
+Background.Size = UDim2.new(1, 0, 1, 0)
+Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Background.BorderSizePixel = 0
+Background.ZIndex = 0
+Background.Parent = Loader
+
+-- AURORA BACKGROUND
+local Aurora = Instance.new("Frame")
+Aurora.Size = UDim2.new(2, 0, 2, 0)
+Aurora.Position = UDim2.new(-0.5, 0, -0.5, 0)
+Aurora.BackgroundColor3 = Color3.fromRGB(88, 255, 166)
+Aurora.BackgroundTransparency = 0.98
+Aurora.BorderSizePixel = 0
+Aurora.ZIndex = 0
+Aurora.Parent = Background
+
+local AuroraGrad = Instance.new("UIGradient")
+AuroraGrad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(88, 255, 166)),
+	ColorSequenceKeypoint.new(0.3, Color3.fromRGB(0, 0, 0)),
+	ColorSequenceKeypoint.new(0.7, Color3.fromRGB(0, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 150, 100))
+}
+AuroraGrad.Rotation = 45
+AuroraGrad.Parent = Aurora
+
+task.spawn(function()
+	while AuroraGrad.Parent do
+		TweenService:Create(AuroraGrad, TweenInfo.new(20, Enum.EasingStyle.Linear), {Rotation = 405}):Play()
+		task.wait(20)
+		AuroraGrad.Rotation = 45
+	end
+end)
+
+-- LASER SCAN LINES
+for i = 1, 8 do
+	local Line = Instance.new("Frame")
+	Line.Size = UDim2.new(0, 1, 0, math.random(100, 300))
+	Line.Position = UDim2.new(math.random(), 0, -0.5, 0)
+	Line.BackgroundColor3 = Color3.fromRGB(88, 255, 166)
+	Line.BackgroundTransparency = 0.85
+	Line.BorderSizePixel = 0
+	Line.ZIndex = 1
+	Line.Parent = Background
+	
+	task.spawn(function()
+		while Line.Parent do
+			Line.Position = UDim2.new(math.random(), 0, -0.5, 0)
+			local t = math.random(4, 8)
+			TweenService:Create(Line, TweenInfo.new(t, Enum.EasingStyle.Linear), {
+				Position = UDim2.new(Line.Position.X.Scale, 0, 1.5, 0)
+			}):Play()
+			task.wait(t + math.random(1, 3))
+		end
+	end)
+end
+
+local Blur = Instance.new("BlurEffect")
+Blur.Name = "LoaderBlur"
+Blur.Size = 0
+Blur.Parent = Lighting
+
+local Main = Instance.new("Frame")
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+Main.Size = UDim2.new(0, 560, 0, 320)
+Main.BackgroundColor3 = Color3.fromRGB(15, 17, 22)
+Main.BorderSizePixel = 0
+Main.BackgroundTransparency = 1
+Main.ZIndex = 5
+Main.Parent = Loader
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(88, 255, 166)
+MainStroke.Thickness = 2
+MainStroke.Transparency = 1
+MainStroke.Parent = Main
+
+local StrokeGrad = Instance.new("UIGradient")
+StrokeGrad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(88, 255, 166)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(65, 235, 146)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(88, 255, 166))
+}
+StrokeGrad.Parent = MainStroke
+
+task.spawn(function()
+	while StrokeGrad.Parent do
+		TweenService:Create(StrokeGrad, TweenInfo.new(2, Enum.EasingStyle.Linear), {Rotation = 360}):Play()
+		task.wait(2)
+		StrokeGrad.Rotation = 0
+	end
+end)
+
+-- 3D Float
+task.spawn(function()
+	while Main.Parent do
+		TweenService:Create(Main, TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Position = UDim2.new(0.5, 0, 0.5, -5),
+			Rotation = 1
+		}):Play()
+		task.wait(3)
+		TweenService:Create(Main, TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Position = UDim2.new(0.5, 0, 0.5, 5),
+			Rotation = -1
+		}):Play()
+		task.wait(3)
+	end
+end)
+
+TweenService:Create(Background, TweenInfo.new(0.5), {BackgroundTransparency = 0}):Play()
+TweenService:Create(Blur, TweenInfo.new(0.5), {Size = 24}):Play()
+task.wait(0.2)
+TweenService:Create(Main, TweenInfo.new(0.4, Enum.EasingStyle.Back), {BackgroundTransparency = 0}):Play()
+TweenService:Create(MainStroke, TweenInfo.new(0.4), {Transparency = 0.2}):Play()
+
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 50)
+TopBar.BackgroundTransparency = 1
+TopBar.BorderSizePixel = 0
+TopBar.ZIndex = 6
+TopBar.Parent = Main
+
+local Title = Instance.new("TextLabel")
+Title.RichText = true
+Title.Text = '<font color="rgb(88,255,166)">DK\'s</font><font color="rgb(200,200,200)"> HUB</font>'
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.BackgroundTransparency = 1
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(0, 26, 0, 0)
+Title.Size = UDim2.new(0, 120, 1, 0)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.ZIndex = 6
+Title.Parent = TopBar
+
+local Subtitle = Instance.new("TextLabel")
+Subtitle.Text = "Select Your Build :"
+Subtitle.Font = Enum.Font.GothamSemibold
+Subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Subtitle.TextSize = 18
+Subtitle.BackgroundTransparency = 1
+Subtitle.BorderSizePixel = 0
+Subtitle.Position = UDim2.new(0.5, 0, 0, 0)
+Subtitle.Size = UDim2.new(0, 280, 1, 0)
+Subtitle.AnchorPoint = Vector2.new(0.5, 0)
+Subtitle.ZIndex = 6
+Subtitle.Parent = TopBar
+
+local Container = Instance.new("Frame")
+Container.Position = UDim2.new(0, 0, 0, 62)
+Container.Size = UDim2.new(1, 0, 0, 200)
+Container.BackgroundTransparency = 1
+Container.BorderSizePixel = 0
+Container.ZIndex = 6
+Container.Parent = Main
+
+local List = Instance.new("UIListLayout")
+List.FillDirection = Enum.FillDirection.Horizontal
+List.HorizontalAlignment = Enum.HorizontalAlignment.Center
+List.VerticalAlignment = Enum.VerticalAlignment.Center
+List.Padding = UDim.new(0, 18)
+List.Parent = Container
+
+local function CreateCard(name, lines, buttonText, delay)
+	local Card = Instance.new("Frame")
+	Card.Size = UDim2.new(0, 250, 0, 190)
+	Card.BackgroundColor3 = Color3.fromRGB(22, 25, 31)
+	Card.BorderSizePixel = 0
+	Card.BackgroundTransparency = 1
+	Card.ZIndex = 6
+	Card.ClipsDescendants = true
+	
+	local CardCorner = Instance.new("UICorner")
+	CardCorner.CornerRadius = UDim.new(0, 10)
+	CardCorner.Parent = Card
+	
+	local CardStroke = Instance.new("UIStroke")
+	CardStroke.Color = Color3.fromRGB(88, 255, 166)
+	CardStroke.Thickness = 1.5
+	CardStroke.Transparency = 1
+	CardStroke.Parent = Card
+	
+	-- HOLOGRAM SCANLINE INSIDE CARD
+	local Scanline = Instance.new("Frame")
+	Scanline.Size = UDim2.new(1, 0, 0, 2)
+	Scanline.Position = UDim2.new(0, 0, 0, 0)
+	Scanline.BackgroundColor3 = Color3.fromRGB(88, 255, 166)
+	Scanline.BackgroundTransparency = 0.9
+	Scanline.BorderSizePixel = 0
+	Scanline.ZIndex = 7
+	Scanline.Parent = Card
+	
+	task.spawn(function()
+		while Scanline.Parent do
+			Scanline.Position = UDim2.new(0, 0, 0, 0)
+			TweenService:Create(Scanline, TweenInfo.new(2, Enum.EasingStyle.Linear), {
+				Position = UDim2.new(0, 0, 1, 0)
+			}):Play()
+			task.wait(3)
+		end
+	end)
+	
+	local CardTitle = Instance.new("TextLabel")
+	CardTitle.Text = name
+	CardTitle.Font = Enum.Font.GothamBold
+	CardTitle.TextColor3 = Color3.fromRGB(88, 255, 166)
+	CardTitle.TextSize = 17
+	CardTitle.BackgroundTransparency = 1
+	CardTitle.BorderSizePixel = 0
+	CardTitle.Position = UDim2.new(0, 0, 0, 22)
+	CardTitle.Size = UDim2.new(1, 0, 0, 22)
+	CardTitle.TextTransparency = 1
+	CardTitle.ZIndex = 7
+	CardTitle.Parent = Card
+	CardTitle.BackgroundColor3 = Card.BackgroundColor3
+	
+	for i, text in ipairs(lines) do
+		local Desc = Instance.new("TextLabel")
+		Desc.Text = "• " .. text
+		Desc.Font = Enum.Font.Gotham
+		Desc.TextColor3 = Color3.fromRGB(175, 175, 175)
+		Desc.TextSize = 13
+		Desc.BackgroundTransparency = 1
+		Desc.BorderSizePixel = 0
+		Desc.Position = UDim2.new(0, 22, 0, 52 + (i-1)*19)
+		Desc.Size = UDim2.new(1, -44, 0, 16)
+		Desc.TextXAlignment = Enum.TextXAlignment.Left
+		Desc.TextTransparency = 1
+		Desc.ZIndex = 7
+		Desc.Parent = Card
+		Desc.BackgroundColor3 = Card.BackgroundColor3
+	end
+	
+	local Button = Instance.new("TextButton")
+	Button.Text = buttonText
+	Button.Font = Enum.Font.GothamSemibold
+	Button.TextSize = 14
+	Button.TextColor3 = Color3.fromRGB(15, 17, 22)
+	Button.BackgroundColor3 = Color3.fromRGB(88, 255, 166)
+	Button.Position = UDim2.new(0, 22, 1, -52)
+	Button.Size = UDim2.new(1, -44, 0, 36)
+	Button.AutoButtonColor = false
+	Button.BackgroundTransparency = 1
+	Button.TextTransparency = 1
+	Button.BorderSizePixel = 0
+	Button.ZIndex = 7
+	
+	local BtnCorner = Instance.new("UICorner")
+	BtnCorner.CornerRadius = UDim.new(0, 7)
+	BtnCorner.Parent = Button
+	
+	Button.Parent = Card
+	Card.Parent = Container
+	
+	task.wait(delay)
+	TweenService:Create(Card, TweenInfo.new(0.4, Enum.EasingStyle.Back), {BackgroundTransparency = 0}):Play()
+	TweenService:Create(CardStroke, TweenInfo.new(0.4), {Transparency = 0.3}):Play()
+	
+	for _, child in ipairs(Card:GetChildren()) do
+		if child:IsA("TextLabel") or child:IsA("TextButton") then
+			TweenService:Create(child, TweenInfo.new(0.3), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
+		end
+	end
+	
+	-- TEXT SCRAMBLE ON HOVER
+	local originalText = Button.Text
+	local chars = {"#", "$", "%", "&", "*", "@", "!", "?"}
+	Button.MouseEnter:Connect(function()
+		TweenService:Create(Button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(98, 255, 176)}):Play()
+		TweenService:Create(CardStroke, TweenInfo.new(0.15), {Transparency = 0.1, Thickness = 2}):Play()
+		
+		task.spawn(function()
+			for i = 1, 3 do
+				local scrambled = ""
+				for j = 1, #originalText do
+					scrambled = scrambled .. chars[math.random(1, #chars)]
+				end
+				Button.Text = scrambled
+				task.wait(0.03)
+			end
+			Button.Text = originalText
+		end)
+	end)
+	
+	Button.MouseLeave:Connect(function()
+		TweenService:Create(Button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(88, 255, 166)}):Play()
+		TweenService:Create(CardStroke, TweenInfo.new(0.15), {Transparency = 0.3, Thickness = 1.5}):Play()
+	end)
+	
+	Button.MouseButton1Click:Connect(function()
+		for i = 1, 20 do
+			local Particle = Instance.new("Frame")
+			Particle.Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5))
+			Particle.Position = UDim2.new(0.5, 0, 0.5, 0)
+			Particle.AnchorPoint = Vector2.new(0.5, 0.5)
+			Particle.BackgroundColor3 = Color3.fromRGB(88, 255, 166)
+			Particle.BorderSizePixel = 0
+			Particle.ZIndex = 9
+			Particle.Parent = Button
+			
+			local PCorner = Instance.new("UICorner")
+			PCorner.CornerRadius = UDim.new(1, 0)
+			PCorner.Parent = Particle
+			
+			local angle = math.random() * math.pi * 2
+			local dist = math.random(50, 100)
+			TweenService:Create(Particle, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.new(0.5, math.cos(angle) * dist, 0.5, math.sin(angle) * dist),
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0, 0, 0, 0)
+			}):Play()
+			game:GetService("Debris"):AddItem(Particle, 0.6)
+		end
+	end)
+	
+	return Button
+end
+
+local ProBtn = CreateCard("Advanced Build", {"Overpowered features", "Mobile Support", "24/7 Support", "Best For Sellers"}, "Launch V2", 0.8)
+local FreeBtn = CreateCard("Standard Build", {"Basic features", "Simple & lightweight", "Perfect for beginners", "Mobile Support"}, "Launch V1", 1.0)
+
+local BottomText = Instance.new("TextLabel")
+BottomText.RichText = true
+BottomText.Text = 'Want more? The <font color="rgb(88,255,166)">Pro Build</font> has everything unlocked.'
+BottomText.Font = Enum.Font.Gotham
+BottomText.TextColor3 = Color3.fromRGB(130, 130, 130)
+BottomText.TextSize = 12
+BottomText.BackgroundTransparency = 1
+BottomText.BorderSizePixel = 0
+BottomText.Position = UDim2.new(0, 0, 1, -34)
+BottomText.Size = UDim2.new(1, 0, 0, 20)
+BottomText.TextTransparency = 1
+BottomText.ZIndex = 6
+BottomText.Parent = Main
+BottomText.BackgroundColor3 = Main.BackgroundColor3
+
+task.wait(1.2)
+TweenService:Create(BottomText, TweenInfo.new(0.3), {TextTransparency = 0}):Play()
+
+local function Close(callback)
+	local t = TweenInfo.new(0.22, Enum.EasingStyle.Quad)
+	TweenService:Create(Background, t, {BackgroundTransparency = 1}):Play()
+	TweenService:Create(Blur, t, {Size = 0}):Play()
+	TweenService:Create(Main, t, {BackgroundTransparency = 1}):Play()
+	task.wait(0.22)
+	Loader:Destroy()
+	Blur:Destroy()
+	if callback then callback() end
+end
+
+ProBtn.MouseButton1Click:Connect(function()
+	Close(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/Meow/refs/heads/main/streetzwarmultifarm.lua"))()
+	end)
+end)
+
+FreeBtn.MouseButton1Click:Connect(function()
+	Close(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/Meow/refs/heads/main/streetswar2.lua"))()
+	end)
+end)

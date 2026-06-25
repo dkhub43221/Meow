@@ -375,7 +375,7 @@ end
 
 ProBtn.MouseButton1Click:Connect(function()
 	Close(function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/dkhub43221/Meow/refs/heads/main/streetzwarmultifarm.lua"))()
+		loadstring(game:HttpGet('https://gate.sirius.menu/gateway?id=sid_gwataemvqxq3'))()
 	end)
 end)
 
